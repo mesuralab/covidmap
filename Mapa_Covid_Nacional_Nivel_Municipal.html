@@ -54,20 +54,8 @@
 	var map = L.map('map');
 	L.control.scale().addTo(map);
 	L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>', subdomains: 'abcd'}).addTo(map);
-	L.Control.Watermark = L.Control.extend({
-	onAdd: function(map) {
-      var img = L.DomUtil.create('img');
-      img.src = 'mesura_log.jpg';
-      img.style.width = '200px';
-      return img;
-	}
-	});
-	L.control.watermark = function(opts) {
-    return new L.Control.Watermark(opts);
-	}
-	L.control.watermark({ position: 'bottomleft' }).addTo(map);
-    var info = L.control();
-
+	
+	var info = L.control({ position: 'topright' });
     info.onAdd = function(map) {
       this._div = L.DomUtil.create("div", "info");
       this.update();
@@ -81,11 +69,23 @@
           ? "<b>" + " Municipio: " +
             props.MUNICIPIO +
             "</b><br />" + "Casos Confirmados: "+ props.count
-          : "Desplacese Sobre un Municipio");
+          : "Desplácese Sobre un Municipio");
     };
 
     info.addTo(map);
-
+	L.Control.Watermark = L.Control.extend({
+	onAdd: function(map) {
+      var img = L.DomUtil.create('img');
+      img.src = 'mesura_log.jpg';
+      img.style.width = '150px';
+      return img;
+	}
+	});
+	L.control.watermark = function(opts) {
+    return new L.Control.Watermark(opts);
+	}
+	L.control.watermark({ position: 'topright' }).addTo(map);
+	
     function getColor(d) {
     return d > 200 ? '#800026' :
            d > 100  ? '#BD0026' :
@@ -112,7 +112,7 @@
       var layer = e.target;
 
       layer.setStyle({
-        weight: 1,
+        weight: 4,
         color: "#FF0000",
         dashArray: "",
         fillOpacity: 0.7
@@ -152,7 +152,7 @@
        layer: geojson,
        propertyName: 'MUNICIPIO',
 	   textPlaceholder: 'Escriba un Municipio',
-	   collapsed:false,
+	   collapsed:true,
        circleLocation: false
 	});
 	searchControl.on('search_locationfound', function(e) {
@@ -173,31 +173,14 @@
 
     return div;
 	};
-
-	legend.addTo(map);
-	var legend1 = L.control({position: 'topleft'});
-	legend1.onAdd = function (map) {
-
-    var div = L.DomUtil.create('div', 'info legend1'),
-        grades = [5014, 9341, 23040, 332, 40091],
-        labels = ['Confirmados', 'Sospechosos', 'Negativos', 'Defunciones', 'Total Pruebas Realizados'];
-		div.innerHTML += '<b>Datos Nacionales dia anterior </b><br>'
-    for (var i = 0; i < grades.length; i++) {
-        div.innerHTML +=labels[i] + ': ' +grades[i] +'<br>';
-    }
-
-    return div;
-	};
-
-	legend1.addTo(map);
 	
 	var legend2 = L.control({position: 'topleft'});
 	legend2.onAdd = function (map) {
 
     var div = L.DomUtil.create('div', 'info legend2'),
-        grades = [5399, 10792, 23900, 406, 37395],
-        labels = ['Confirmados', 'Sospechosos', 'Negativos', 'Defunciones', 'Total Pruebas Realizados'];
-		div.innerHTML += '<b>Situacón Nacional Actual</b><br>'
+        grades = [5399, 10792, 406],
+        labels = ['Confirmados', 'Sospechosos', 'Defunciones'];
+		div.innerHTML += '<b>Covid-19 México</b><br>'
     for (var i = 0; i < grades.length; i++) {
         div.innerHTML +=labels[i] + ': ' +grades[i] +'<br>';
     }
